@@ -7,20 +7,32 @@ import (
 
 func main() {
 	data := make([]byte, 100)
-	//var current_filepath string = "C:/development/GO/main/test.txt"
-	file, err := os.Open("C:/development/GO/main/test.txt")
+	file, err := os.OpenFile("testdata.txt", os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
 		fmt.Println("[DEBUG] Error in opening file")
 		fmt.Println("[DEBUG] Trying to create new file")
-		create_new_file("test.txt")
+		CreateNewFile("test.txt")
 	} else {
 		fmt.Println("[DEBUG] File opened successfully", &file)
 	}
-	read_from_file(data, file)
+	ReadFromFile(data, file)
+
+	//part with writing data to file dont fucking work, idk for now how to fix it, but I got new data in file with data
+	_, err = fmt.Fprintln(file, data)
+	if err != nil {
+		fmt.Println("[DEBUG] PIZDEZ DOESNT WORK!!!", err)
+		file.Close()
+		return
+	} else {
+		fmt.Println("[DEBUG] All is good")
+	}
+	fmt.Println("[DEBUG] Trying to read data form modified file")
+	ReadFromFile(data, file)
 	file.Close()
 }
 
-func create_new_file(filename string) *os.File {
+//this func does work correctly
+func CreateNewFile(filename string) *os.File {
 	file, err := os.Create(filename)
 	if err != nil {
 		fmt.Println("[DEBUG] Error with creating new file")
@@ -31,7 +43,8 @@ func create_new_file(filename string) *os.File {
 	return file
 }
 
-func read_from_file(data []uint8, file *os.File) {
+//this func does work correctly, but need to be modified
+func ReadFromFile(data []uint8, file *os.File) {
 	count, err := file.Read(data)
 	if err != nil {
 		//if file is empty it return error, we need to fix it (need to return warning, and firstly recognize it somehow)
