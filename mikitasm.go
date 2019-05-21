@@ -69,9 +69,10 @@ func ReadFromFile(data []uint8, file *os.File) {
 	}
 
 	//if file content size is 0, reading doesn't work
-	count, err := file.Read(data)
+	count, err := file.ReadAt(data, 0)
 	if err != nil {
 		fmt.Println("[DEBUG] Error in reading data from file")
+		fmt.Println(err)
 		fmt.Println("[DEBUG] Stopping program")
 		file.Close()
 	} else {
