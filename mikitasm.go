@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	data := make([]byte, 100)
+	data := ""
 	file, err := os.OpenFile("testdata.txt", os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
-		fmt.Println("[DEBUG] Error in opening file")
+		fmt.Println("[DEBUG] Error in opening file :: ", err)
 		fmt.Println("[DEBUG] Trying to create new file")
 		CreateNewFile("test.txt")
 	} else {
@@ -18,23 +18,15 @@ func main() {
 	ReadFromFile(data, file)
 
 	//part with writing data to file dont fucking work, idk for now how to fix it, but I got new data in file with data
-	/*_, err = fmt.Fprintln(file, data)
-	if err != nil {
-		fmt.Println("[DEBUG] PIZDEZ DOESNT WORK!!!", err)
-		file.Close()
-		return
-	} else {
-		fmt.Println("[DEBUG] All is good")
-	}
+	WriteToFile(data, file)
 	fmt.Println("[DEBUG] Trying to read data form modified file")
 	ReadFromFile(data, file)
-	*/
 
 	file.Close()
 }
 
 func WriteToFile(data string, file *os.File) {
-	file.WriteString(data)
+	file.Write([]byte(data))
 }
 
 //this func does work correctly
@@ -50,12 +42,11 @@ func CreateNewFile(filename string) *os.File {
 }
 
 //this func does work correctly, but need to be modified
-func ReadFromFile(data []uint8, file *os.File) {
-
+func ReadFromFile(data string, file *os.File) {
 	//getting file stats, and whis stuff fking work
 	filestatus, err := os.Stat("testdata.txt")
 	if err != nil {
-		fmt.Println("[DEBUG] Can't get file status")
+		fmt.Println("[DEBUG] Can't get file status :: ", err)
 		fmt.Println("[DEBUG] Stopping program")
 		file.Close()
 	} else {
@@ -69,10 +60,11 @@ func ReadFromFile(data []uint8, file *os.File) {
 	}
 
 	//if file content size is 0, reading doesn't work
-	count, err := file.ReadAt(data, 0)
+	data1 := make([]byte, 100)
+	count, err := file.ReadAt(data1, 0)
+	data = string(data1)
 	if err != nil {
-		fmt.Println("[DEBUG] Error in reading data from file")
-		fmt.Println(err)
+		fmt.Println("[DEBUG] Error in reading data from file :: ", err)
 		fmt.Println("[DEBUG] Stopping program")
 		file.Close()
 	} else {
