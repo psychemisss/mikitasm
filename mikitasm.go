@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	data := ""
+	data := "fd"
 	file, err := os.OpenFile("testdata.txt", os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
 		fmt.Println("[DEBUG] Error in opening file :: ", err)
@@ -63,13 +63,7 @@ func ReadFromFile(data string, file *os.File) {
 	data1 := make([]byte, 100)
 	count, err := file.ReadAt(data1, 0)
 	data = string(data1)
-	if err != nil {
-		fmt.Println("[DEBUG] Error in reading data from file :: ", err)
-		fmt.Println("[DEBUG] Stopping program")
-		file.Close()
-	} else {
-		fmt.Println("[DEBUG] Reading success", &file)
-		fmt.Printf("read %d bytes: %q\n", count, data[:count])
-	}
+	fmt.Println("[DEBUG] Reading success", &file)
+	fmt.Printf("read %d bytes: %q\n", count, data[:count])
 
 }
